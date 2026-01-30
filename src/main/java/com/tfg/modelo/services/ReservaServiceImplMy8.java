@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tfg.modelo.dtos.ReservaRequestDto;
+import com.tfg.modelo.dtos.ReservaResponseDto;
 import com.tfg.modelo.entities.Reserva;
+import com.tfg.modelo.mappers.ReservaMapper;
 import com.tfg.modelo.repositories.ReservaRepository;
 
 @Service
@@ -13,24 +16,32 @@ public class ReservaServiceImplMy8 implements ReservaService{
 	
 	@Autowired
 	private ReservaRepository reservaRepository;
-
+	
+	@Autowired
+	private ReservaMapper reservaMapper;
+	
+	
 	@Override
-	public Reserva findById(Integer atributoId) {
-		return reservaRepository.findById(atributoId).orElse(null);
+	public List<ReservaResponseDto> findAll() {
+		return reservaRepository.findAll().stream()
+				.map(reservaMapper::toResponseDto)
+				.toList();
+	}
+	
+	@Override
+	public ReservaResponseDto findById(int id) {
+		return reservaMapper.toResponseDto(reservaRepository.findById(id).orElse(null));
 	}
 
-	@Override
-	public List<Reserva> findAll() {
-		return reservaRepository.findAll();
-	}
+	
 
 	@Override
-	public Reserva insertOne(Reserva entidad) {
+	public ReservaResponseDto insert(ReservaRequestDto dto) {
 		
-		if (entidad == null || !reservaRepository.existsById(entidad.getIdReserva())) {
-			return reservaRepository.save(entidad);
+		if (dto == null) {
+			throw new ;
 		}
-		return null;
+		return reservaRepository.save(entidad);
 	}
 
 	@Override

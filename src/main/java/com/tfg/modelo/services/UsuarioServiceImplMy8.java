@@ -13,6 +13,7 @@ import com.tfg.modelo.dtos.UsuarioRequestDto;
 import com.tfg.modelo.dtos.UsuarioResponseDto;
 import com.tfg.modelo.entities.Rol;
 import com.tfg.modelo.entities.Usuario;
+import com.tfg.modelo.mappers.UsuarioMapper;
 import com.tfg.modelo.repositories.RolRepository;
 import com.tfg.modelo.repositories.UsuarioRepository;
 
@@ -23,7 +24,7 @@ public class UsuarioServiceImplMy8 implements UsuarioService, UserDetailsService
 	private UsuarioRepository usuarioRepository;
 	
 	@Autowired
-	private RolRepository rolRepository;
+	private UsuarioMapper usuarioMapper;
 	
 	private PasswordEncoder passwordEncoder;
 	
@@ -32,61 +33,48 @@ public class UsuarioServiceImplMy8 implements UsuarioService, UserDetailsService
     }
 
 	@Override
-	public Usuario findById(Integer atributoId) {
-		return usuarioRepository.findById(atributoId).orElse(null);
+	public UsuarioResponseDto findById(int id) {
+		return usuarioMapper.toResponseDto(usuarioRepository.findById(id).orElse(null));
 	}
 
 	@Override
-	public List<Usuario> findAll() {
-		return usuarioRepository.findAll();
+	public List<UsuarioResponseDto> findAll() {
+		return usuarioRepository.findAll().stream()
+				.map(usuarioMapper::toResponseDto)
+				.toList();
 	}
 
 	@Override
-	public Usuario insertOne(Usuario entidad) {
-		if (entidad== null || !usuarioRepository.existsById(entidad.getIdUsuario())) {
-			return usuarioRepository.save(entidad);
+	public UsuarioResponseDto create(UsuarioRequestDto dto) {
+		if (dto== null) {
+			throw new IllegalArgumentException("El usuario no puede ser null");
 		}
-		return null;
+		Usuario nuevoUsuario = usuarioMapper.toEntity(dto);
+		Usuario guardado = usuarioRepository.save(nuevoUsuario);
+		return usuarioMapper.toResponseDto(guardado);
 	}
 
 	@Override
-	public Usuario updateOne(Usuario entidad) {
-		if (usuarioRepository.existsById(entidad.getIdUsuario())) {
-			return usuarioRepository.save(entidad);
-		}
-		return null;
-	}
-
-	@Override
-	public void deleteOne(Integer atributoId) {
-		usuarioRepository.deleteById(atributoId);
-	}
-
-	@Override
-	public UsuarioResponseDto toResponseDTO(Usuario usuario) {
-		return UsuarioResponseDto.builder()
-				.usuarioId(usuario.getIdUsuario())
-				.nombre(usuario.getNombre())
-		        .apellidos(usuario.getApellidos())
-		        .email(usuario.getEmail())
-		        .rol(usuario.getRol().getNombre())
-		        .build();
-	}
-
-	@Override
-	public Usuario fromRequestDTO(UsuarioRequestDto dto) {
+	public UsuarioResponseDto update(int id, UsuarioRequestDto dto) {
+		Usuario usuario = usuarioRepository.findById(id)
+				.orElseThrow(()->new RuntimeException("Usuario no encontrado"));
 		
-		Rol rol = rolRepository.findByNombre(dto.getRol())
-				.orElseThrow(() -> new RuntimeException("Rol no válido"));
+		usuario.setNombre(dto.getNombre());
+		usuario.setApellidos(dto.getApellidos());
+		usuario.setEmail(dto.getEmail());
+		usuario.setPassword(dto.getPassword());
 		
-		return Usuario.builder()
-		        .nombre(dto.getNombre())
-		        .apellidos(dto.getApellidos())
-		        .email(dto.getEmail())
-		        .password(passwordEncoder.encode(dto.getPassword()))
-		        .rol(rol)
-		        .activo(true)
-		        .build();
+		Usuario actualizado = usuarioRepository.save(usuario);
+		
+		return usuarioMapper.toResponseDto(actualizado);
+	}
+
+	@Override
+	public void delete(int id) {
+		
+		if (!usuarioRepository.existsById(id))
+			throw new RuntimeException("Usuario no encontrado"); 
+		usuarioRepository.deleteById(id);
 	}
 
 	@Override

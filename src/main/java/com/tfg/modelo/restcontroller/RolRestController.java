@@ -1,14 +1,13 @@
 package com.tfg.modelo.restcontroller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,29 +22,42 @@ public class RolRestController {
 	private RolService rolService;
 	
 	@GetMapping("/findById/{rolId}")
-	public Rol findById(@PathVariable int rolId) {
-		return rolService.findById(rolId);
+	ResponseEntity<?> findById(@PathVariable int rolId) {
+		Rol rol = rolService.findById(rolId);
+
+        if (rol == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(rol);
 	}
 	
 	@GetMapping("/all")
-	public List<Rol> findAll() {
-		return rolService.findAll();
+	ResponseEntity<?> findAll() {
+		return ResponseEntity.ok(rolService.findAll());
 	}
 	
 	@PostMapping("/create/{rol}")
-	public Rol create(@PathVariable String rol) {
-		return rolService.create(rol);
+	ResponseEntity<?> create(@PathVariable String rol) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(rolService.create(rol));
 	}
 	
 	@PutMapping("/update/{rolId}{nombreRol}")
-	public Rol update(@PathVariable int rolId,
+	ResponseEntity<?> update(@PathVariable int rolId,
 			@PathVariable String nombreRol) {
-		return rolService.update(rolId,nombreRol);
+		Rol actualizado = rolService.update(rolId, nombreRol);
+
+        if (actualizado == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(actualizado);
 	}
 	
 	@DeleteMapping("/delete/{rolId}")
-	public void delete(@PathVariable int rolId) {
+	ResponseEntity<?> delete(@PathVariable int rolId) {
 		rolService.delete(rolId);
+        return ResponseEntity.noContent().build();
 	}
 
 }

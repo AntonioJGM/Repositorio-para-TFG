@@ -1,8 +1,8 @@
 package com.tfg.modelo.restcontroller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tfg.modelo.dtos.LibroRequestDto;
 import com.tfg.modelo.dtos.LibroResponseDto;
-import com.tfg.modelo.dtos.UsuarioRequestDto;
-import com.tfg.modelo.entities.Libro;
-import com.tfg.modelo.entities.Usuario;
 import com.tfg.modelo.services.LibroService;
 
 @RestController
@@ -27,30 +24,43 @@ public class LibroRestController {
 	private LibroService libroService;
 	
 	@GetMapping("/byId/{libroId}")
-	public LibroResponseDto findOne(@PathVariable int libroId) {
-		return libroService.findById(libroId);
-	}
-	
-	@GetMapping("/all")
-	public List<LibroResponseDto> findAll() {
-		return libroService.findAll();
-	}
-	
-	@PostMapping("/create")
-	public LibroResponseDto create(@RequestBody LibroRequestDto libroDto) {
-		return libroService.create(libroDto);
-	}
-	
-	@PutMapping("/update/{libroId}")
-	public LibroResponseDto update(@PathVariable int libroId,
-			@RequestBody LibroRequestDto libroDto) {
-		
-		return libroService.update(libroId, libroDto);
-	}
-	
-	@DeleteMapping("/delete/{libroId}")
-	public void delete(@PathVariable int libroId) {
-		libroService.delete(libroId);
-	}
+    ResponseEntity<?> findOne(@PathVariable int libroId) {
+        LibroResponseDto libro = libroService.findById(libroId);
 
+        if (libro == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(libro);
+    }
+
+    @GetMapping("/all")
+    ResponseEntity<?> findAll() {
+        return ResponseEntity.ok(libroService.findAll());
+    }
+
+    @PostMapping("/create")
+    ResponseEntity<?> create(@RequestBody LibroRequestDto libroDto) {
+        LibroResponseDto creado = libroService.create(libroDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+    }
+
+    @PutMapping("/update/{libroId}")
+    ResponseEntity<?> update(@PathVariable int libroId,
+                                            @RequestBody LibroRequestDto libroDto) {
+
+        LibroResponseDto actualizado = libroService.update(libroId, libroDto);
+
+        if (actualizado == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(actualizado);
+    }
+
+    @DeleteMapping("/delete/{libroId}")
+    ResponseEntity<?> delete(@PathVariable int libroId) {
+        libroService.delete(libroId);
+        return ResponseEntity.noContent().build();
+    }
 }
