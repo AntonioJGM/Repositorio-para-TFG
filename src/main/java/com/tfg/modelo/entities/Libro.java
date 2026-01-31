@@ -33,4 +33,5 @@ public class Libro implements Serializable{
 	private String categoria;
 	private String isbn;
 	private boolean disponible;
+	private String imagen;
 }

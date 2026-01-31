@@ -17,5 +17,6 @@ public class LibroRequestDto {
 	private String categoria;
 	private String isbn;
 	private boolean disponible;
+	private String imagen;
 
 }

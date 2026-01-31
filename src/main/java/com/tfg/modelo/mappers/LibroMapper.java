@@ -19,6 +19,7 @@ public class LibroMapper {
                 .categoria(libroDto.getCategoria())
                 .isbn(libroDto.getIsbn())
                 .disponible(libroDto.isDisponible())
+                .imagen(libroDto.getImagen())
                 .build();
     }
 
@@ -34,6 +35,7 @@ public class LibroMapper {
                 .categoria(libro.getCategoria())
                 .isbn(libro.getIsbn())
                 .disponible(libro.isDisponible())
+                .imagen(libro.getImagen())
                 .build();
     }
 

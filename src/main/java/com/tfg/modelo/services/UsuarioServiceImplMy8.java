@@ -28,6 +28,10 @@ public class UsuarioServiceImplMy8 implements UsuarioService, UserDetailsService
 	
 	private PasswordEncoder passwordEncoder;
 	
+	@Autowired
+	private RolRepository rolRepository;
+
+	
 	public UsuarioServiceImplMy8(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
@@ -50,6 +54,12 @@ public class UsuarioServiceImplMy8 implements UsuarioService, UserDetailsService
 			throw new IllegalArgumentException("El usuario no puede ser null");
 		}
 		Usuario nuevoUsuario = usuarioMapper.toEntity(dto);
+		// Encriptar password 
+		nuevoUsuario.setPassword(passwordEncoder.encode(dto.getPassword()));
+		// Asignar rol 
+		Rol rol = rolRepository.findByNombre(dto.getRol()) .orElseThrow(() -> new RuntimeException("Rol no encontrado")); nuevoUsuario.setRol(rol);
+		// Activar Usuario 
+		nuevoUsuario.setActivo(true);
 		Usuario guardado = usuarioRepository.save(nuevoUsuario);
 		return usuarioMapper.toResponseDto(guardado);
 	}

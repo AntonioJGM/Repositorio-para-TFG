@@ -57,6 +57,7 @@ public class LibroServiceImplMy8 implements LibroService{
         libro.setCategoria(libroDto.getCategoria());
         libro.setIsbn(libroDto.getIsbn());
         libro.setDisponible(libroDto.isDisponible());
+        libro.setImagen(libroDto.getImagen());
 
         Libro actualizado = libroRepository.save(libro);
         return libroMapper.toResponseDto(actualizado);

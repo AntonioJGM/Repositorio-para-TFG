@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tfg.modelo.dtos.RolRequestDto;
 import com.tfg.modelo.entities.Rol;
 import com.tfg.modelo.services.RolService;
+
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/rol")
@@ -42,10 +45,10 @@ public class RolRestController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(rolService.create(rol));
 	}
 	
-	@PutMapping("/update/{rolId}{nombreRol}")
+	@PutMapping("/update/{rolId}")
 	ResponseEntity<?> update(@PathVariable int rolId,
-			@PathVariable String nombreRol) {
-		Rol actualizado = rolService.update(rolId, nombreRol);
+			@RequestBody RolRequestDto dto) {
+		Rol actualizado = rolService.update(rolId, dto);
 
         if (actualizado == null) {
             return ResponseEntity.notFound().build();

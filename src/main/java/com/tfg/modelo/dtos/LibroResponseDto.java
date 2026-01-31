@@ -18,5 +18,6 @@ public class LibroResponseDto {
 	private String categoria;
 	private String isbn;
 	private boolean disponible;
+	private String imagen;
 
 }

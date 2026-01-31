@@ -5,9 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.tfg.modelo.entities.Libro;
+import com.tfg.modelo.dtos.RolRequestDto;
 import com.tfg.modelo.entities.Rol;
 import com.tfg.modelo.repositories.RolRepository;
+
 
 @Service
 public class RolServiceImplMy8 implements RolService{
@@ -38,15 +39,15 @@ public class RolServiceImplMy8 implements RolService{
 	}
 
 	@Override
-	public Rol update(int idRol, String rol) {
+	public Rol update(int idRol, RolRequestDto dto) {
 		Rol nuevoRol = rolRepository.findById(idRol)
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 		
-		if (rol == null) {
+		if (dto.getNombre() == null) {
 			throw new IllegalArgumentException("El rol no puede ser null");
 		}
 		
-		nuevoRol.setNombre(rol.toUpperCase());
+		nuevoRol.setNombre(dto.getNombre().toUpperCase());
 		
 		return rolRepository.save(nuevoRol);
 	}

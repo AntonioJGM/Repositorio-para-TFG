@@ -29,6 +29,7 @@ public class UsuarioMapper {
                 .nombre(dto.getNombre())
                 .apellidos(dto.getApellidos())
                 .email(dto.getEmail())
+                .password(dto.getPassword())
                 .build();
     }
 
