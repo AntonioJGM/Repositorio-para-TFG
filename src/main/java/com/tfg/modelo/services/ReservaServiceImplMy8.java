@@ -36,25 +36,33 @@ public class ReservaServiceImplMy8 implements ReservaService{
 	
 
 	@Override
-	public ReservaResponseDto insert(ReservaRequestDto dto) {
+	public ReservaResponseDto create(ReservaRequestDto dto) {
 		
 		if (dto == null) {
-			throw new ;
+			throw new IllegalArgumentException("La reserva no puede ser null");
 		}
-		return reservaRepository.save(entidad);
+		Reserva nuevaReserva = reservaMapper.toEntity(dto);
+		Reserva guardado = reservaRepository.save(nuevaReserva);
+		return reservaMapper.toResponseDto(guardado);
 	}
 
 	@Override
-	public Reserva updateOne(Reserva entidad) {
-		if (reservaRepository.existsById(entidad.getIdReserva())) {
-			return reservaRepository.save(entidad);
-		}
-		return null;
+	public ReservaResponseDto update(int id, ReservaRequestDto dto) {
+		Reserva reserva = reservaRepository.findById(id)
+				.orElseThrow(()->new RuntimeException("Reserva no encontrada"));
+		
+		reserva.setFechaReserva(dto.getFechaReserva());
+		
+		Reserva actualizado = reservaRepository.save(reserva);
+		
+		return reservaMapper.toResponseDto(actualizado);
 	}
 
 	@Override
-	public void deleteOne(Integer atributoId) {
-		reservaRepository.deleteById(atributoId);		
+	public void delete(int id) {
+		if (!reservaRepository.existsById(id))
+			throw new RuntimeException("Reserva no encontrada");
+		reservaRepository.deleteById(id);		
 	}
 	
 }

@@ -47,7 +47,7 @@ public class LibroRestController {
 
     @PutMapping("/update/{libroId}")
     ResponseEntity<?> update(@PathVariable int libroId,
-                                            @RequestBody LibroRequestDto libroDto) {
+    		@RequestBody LibroRequestDto libroDto) {
 
         LibroResponseDto actualizado = libroService.update(libroId, libroDto);
 

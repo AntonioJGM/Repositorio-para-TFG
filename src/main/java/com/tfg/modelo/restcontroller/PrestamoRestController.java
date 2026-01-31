@@ -12,44 +12,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tfg.modelo.dtos.UsuarioRequestDto;
-import com.tfg.modelo.dtos.UsuarioResponseDto;
-import com.tfg.modelo.services.UsuarioService;
+import com.tfg.modelo.dtos.PrestamoRequestDto;
+import com.tfg.modelo.dtos.PrestamoResponseDto;
+import com.tfg.modelo.services.PrestamoService;
 
 @RestController
-@RequestMapping("/usuario")
-public class UsuarioRestController {
+@RequestMapping("/prestamo")
+public class PrestamoRestController {
 	
 	@Autowired
-	private UsuarioService usuarioService;
+	private PrestamoService prestamoService;
 	
-	@GetMapping("/byId/{usuarioId}")
-    ResponseEntity<?> findOne(@PathVariable int usuarioId) {
-        UsuarioResponseDto usuario = usuarioService.findById(usuarioId);
+	@GetMapping("/byId/{prestamoId}")
+    ResponseEntity<?> findOne(@PathVariable int prestamoId) {
+        PrestamoResponseDto prestamo = prestamoService.findById(prestamoId);
 
-        if (usuario == null) {
+        if (prestamo == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(usuario);
+        return ResponseEntity.ok(prestamo);
     }
 
     @GetMapping("/all")
     ResponseEntity<?> findAll() {
-        return ResponseEntity.ok(usuarioService.findAll());
+        return ResponseEntity.ok(prestamoService.findAll());
     }
 
     @PostMapping("/create")
-    ResponseEntity<?> create(@RequestBody UsuarioRequestDto usuarioDto) {
-        UsuarioResponseDto creado = usuarioService.create(usuarioDto);
+    ResponseEntity<?> create(@RequestBody PrestamoRequestDto prestamoDto) {
+        PrestamoResponseDto creado = prestamoService.create(prestamoDto);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
-    @PutMapping("/update/{usuarioId}")
-    ResponseEntity<?> update(@PathVariable int usuarioId, 
-    		@RequestBody UsuarioRequestDto usuarioDto) {
+    @PutMapping("/update/{prestamoId}")
+    ResponseEntity<?> update(@PathVariable int prestamoId,
+    		@RequestBody PrestamoRequestDto prestamoDto) {
 
-        UsuarioResponseDto actualizado = usuarioService.update(usuarioId, usuarioDto);
+        PrestamoResponseDto actualizado = prestamoService.update(prestamoId, prestamoDto);
 
         if (actualizado == null) {
             return ResponseEntity.notFound().build();
@@ -58,9 +59,9 @@ public class UsuarioRestController {
         return ResponseEntity.ok(actualizado);
     }
 
-    @DeleteMapping("/delete/{usuarioId}")
-    ResponseEntity<?> delete(@PathVariable int usuarioId) {
-        usuarioService.delete(usuarioId);
+    @DeleteMapping("/delete/{prestamoId}")
+    ResponseEntity<?> delete(@PathVariable int prestamoId) {
+        prestamoService.delete(prestamoId);
         return ResponseEntity.noContent().build();
     }
 }
