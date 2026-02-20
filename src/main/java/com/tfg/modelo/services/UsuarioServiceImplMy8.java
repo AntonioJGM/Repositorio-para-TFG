@@ -69,6 +69,13 @@ public class UsuarioServiceImplMy8 implements UsuarioService, UserDetailsService
 		Usuario usuario = usuarioRepository.findById(id)
 				.orElseThrow(()->new RuntimeException("Usuario no encontrado"));
 		
+		//Validar email duplicado 
+		usuarioRepository.findByEmail(dto.getEmail()) 
+		.filter(u -> u.getIdUsuario() != id) 
+		.ifPresent(u -> { 
+			throw new RuntimeException("El email ya está en uso por otro usuario"); 
+		});
+		
 		usuario.setNombre(dto.getNombre());
 		usuario.setApellidos(dto.getApellidos());
 		usuario.setEmail(dto.getEmail());
