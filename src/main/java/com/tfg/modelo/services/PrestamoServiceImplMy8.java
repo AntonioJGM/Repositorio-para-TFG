@@ -39,8 +39,8 @@ public class PrestamoServiceImplMy8 implements PrestamoService{
 	}
 
 	@Override
-	public PrestamoResponseDto findById(int id) {
-		return prestamoMapper.toResponseDto(prestamoRepository.findById(id).orElse(null));
+	public PrestamoResponseDto findById(int idPrestamo) {
+		return prestamoMapper.toResponseDto(prestamoRepository.findById(idPrestamo).orElse(null));
 	}
 
 	/*
@@ -63,10 +63,10 @@ public class PrestamoServiceImplMy8 implements PrestamoService{
 	        throw new IllegalArgumentException("El prestamo no puede ser null");
 	    }
 
-	    Usuario usuario = usuarioRepository.findById(dto.getUsuarioId()) 
+	    Usuario usuario = usuarioRepository.findById(dto.getIdUsuario()) 
 	    		.orElseThrow(() -> new RuntimeException("Usuario no encontrado")); 
 	    
-	    Libro libro = libroRepository.findById(dto.getLibroId()) 
+	    Libro libro = libroRepository.findById(dto.getIdLibro()) 
 	    		.orElseThrow(() -> new RuntimeException("Libro no encontrado"));
 	    
 	    Prestamo nuevoPrestamo = prestamoMapper.toEntity(dto);
@@ -99,10 +99,10 @@ public class PrestamoServiceImplMy8 implements PrestamoService{
 		prestamo.setFechaFin(dto.getFechaInicio().plusDays(20));
 		
 		// damos permiso para cambiar usuario o libro  
-		Usuario usuario = usuarioRepository.findById(dto.getUsuarioId()) 
+		Usuario usuario = usuarioRepository.findById(dto.getIdUsuario()) 
 				.orElseThrow(() -> new RuntimeException("Usuario no encontrado")); 
 		
-		Libro libro = libroRepository.findById(dto.getLibroId()) 
+		Libro libro = libroRepository.findById(dto.getIdLibro()) 
 				.orElseThrow(() -> new RuntimeException("Libro no encontrado")); 
 		
 		prestamo.setUsuario(usuario); 

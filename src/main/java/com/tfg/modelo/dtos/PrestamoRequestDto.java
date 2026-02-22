@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class PrestamoRequestDto {
 	
 	private LocalDate fechaInicio;
-	private int usuarioId;
-	private int libroId;
+	private int idUsuario;
+	private int idLibro;
 
 }

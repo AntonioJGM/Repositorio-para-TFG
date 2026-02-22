@@ -22,5 +22,7 @@ public class PrestamoResponseDto {
 	private BigDecimal importeSancion;
 	private String nombreUsuario;
 	private String tituloLibro;
+	private int idUsuario; 
+	private int idLibro;
 
 }

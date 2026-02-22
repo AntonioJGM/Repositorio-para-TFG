@@ -21,6 +21,8 @@ public class PrestamoMapper {
                 .importeSancion(prestamo.getImporteSancion())
                 .nombreUsuario(prestamo.getUsuario().getNombre())
                 .tituloLibro(prestamo.getLibro().getTitulo())
+                .idLibro(prestamo.getLibro().getIdLibro())
+                .idUsuario(prestamo.getUsuario().getIdUsuario())
                 .build();
     }
 
