@@ -18,5 +18,7 @@ public class ReservaResponseDto {
 	private boolean activa;
 	private String nombreUsuario;
 	private String tituloLibro;
+	private int idUsuario; 
+	private int idLibro;
 
 }

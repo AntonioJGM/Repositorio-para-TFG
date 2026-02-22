@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class ReservaRequestDto {
 	
 	private LocalDate fechaReserva;
-	private int usuarioId;
-	private int libroId;
+	private int idUsuario;
+	private int idLibro;
 
 }

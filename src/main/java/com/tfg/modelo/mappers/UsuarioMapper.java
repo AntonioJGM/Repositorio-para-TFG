@@ -13,7 +13,7 @@ public class UsuarioMapper {
         if (usuario == null) return null;
 
         return UsuarioResponseDto.builder()
-                .usuarioId(usuario.getIdUsuario())
+                .idUsuario(usuario.getIdUsuario())
                 .nombre(usuario.getNombre())
                 .apellidos(usuario.getApellidos())
                 .email(usuario.getEmail())

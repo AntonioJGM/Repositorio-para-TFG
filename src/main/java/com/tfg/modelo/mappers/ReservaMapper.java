@@ -18,6 +18,8 @@ public class ReservaMapper {
                 .activa(reserva.isActiva())
                 .nombreUsuario(reserva.getUsuario().getNombre())
                 .tituloLibro(reserva.getLibro().getTitulo())
+                .idUsuario(reserva.getUsuario().getIdUsuario()) 
+                .idLibro(reserva.getLibro().getIdLibro())
                 .build();
     }
 

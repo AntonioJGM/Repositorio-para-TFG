@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UsuarioResponseDto {
 	
-	private int usuarioId;
+	private int idUsuario;
 	private String nombre;
 	private String apellidos;
 	private String email;
