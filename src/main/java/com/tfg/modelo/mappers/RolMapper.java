@@ -19,12 +19,13 @@ public class RolMapper {
                 .build();
     }
 
-    public Usuario toEntity(RolRequestDto dto) {
-        if (dto == null) return null;
-
-        return Usuario.builder()
-                .nombre(dto.getNombre())
-                .build();
-    }
+	public Rol toEntity(RolRequestDto dto) { 
+		if (dto == null) 
+			return null; 
+		return Rol.builder() 
+					.nombre(dto
+						.getNombre()) 
+					.build(); 
+		}
 
 }
