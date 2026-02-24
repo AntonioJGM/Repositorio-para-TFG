@@ -62,11 +62,11 @@ public class UsuarioRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
-    @PutMapping("/update/{usuarioId}")
-    ResponseEntity<?> update(@PathVariable int usuarioId, 
+    @PutMapping("/update/{idUsuario}")
+    ResponseEntity<?> update(@PathVariable int idUsuario, 
     		@RequestBody UsuarioRequestDto usuarioDto) {
 
-        UsuarioResponseDto actualizado = usuarioService.update(usuarioId, usuarioDto);
+        UsuarioResponseDto actualizado = usuarioService.update(idUsuario, usuarioDto);
 
         if (actualizado == null) {
             return ResponseEntity.notFound().build();

@@ -66,23 +66,26 @@ public class UsuarioServiceImplMy8 implements UsuarioService, UserDetailsService
 
 	@Override
 	public UsuarioResponseDto update(int id, UsuarioRequestDto dto) {
-		Usuario usuario = usuarioRepository.findById(id)
-				.orElseThrow(()->new RuntimeException("Usuario no encontrado"));
+		Usuario usuario = usuarioRepository.findById(id) .orElseThrow(() -> new RuntimeException("Usuario no encontrado")); 
 		
 		//Validar email duplicado 
 		usuarioRepository.findByEmail(dto.getEmail()) 
 		.filter(u -> u.getIdUsuario() != id) 
 		.ifPresent(u -> { 
-			throw new RuntimeException("El email ya está en uso por otro usuario"); 
-		});
+			throw new RuntimeException("El email ya está en uso por otro usuario");
+			}); 
 		
-		usuario.setNombre(dto.getNombre());
-		usuario.setApellidos(dto.getApellidos());
-		usuario.setEmail(dto.getEmail());
-		usuario.setPassword(dto.getPassword());
+		usuario.setNombre(dto.getNombre()); 
+		usuario.setApellidos(dto.getApellidos()); 
+		usuario.setEmail(dto.getEmail()); 
 		
-		Usuario actualizado = usuarioRepository.save(usuario);
+		//SOLO actualizar contraseña si viene una nueva 
+		if (dto.getPassword() != null && !dto.getPassword().isBlank()) { 
+			String hashed = passwordEncoder.encode(dto.getPassword()); 
+			usuario.setPassword(hashed); 
+			} 
 		
+		Usuario actualizado = usuarioRepository.save(usuario); 
 		return usuarioMapper.toResponseDto(actualizado);
 	}
 
