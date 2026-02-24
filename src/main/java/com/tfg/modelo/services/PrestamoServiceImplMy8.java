@@ -90,26 +90,23 @@ public class PrestamoServiceImplMy8 implements PrestamoService{
 
 	@Override
 	public PrestamoResponseDto update(int id, PrestamoRequestDto dto) {
-		Prestamo prestamo = prestamoRepository.findById(id)
-				.orElseThrow(()->new RuntimeException("Prestamo no encontrado"));
+		Prestamo prestamo = prestamoRepository.findById(id) .orElseThrow(() -> new RuntimeException("Prestamo no encontrado")); 
 		
-		prestamo.setFechaInicio(dto.getFechaInicio());
+		// Actualizar fecha de inicio 
+		prestamo.setFechaInicio(dto.getFechaInicio()); 
 		
-		//recalcula fecha fin automáticamente 
-		prestamo.setFechaFin(dto.getFechaInicio().plusDays(20));
+		// Recalcular fecha fin automáticamente (20 días después) 
+		prestamo.setFechaFin(dto.getFechaInicio().plusDays(20)); 
 		
-		// damos permiso para cambiar usuario o libro  
-		Usuario usuario = usuarioRepository.findById(dto.getIdUsuario()) 
-				.orElseThrow(() -> new RuntimeException("Usuario no encontrado")); 
-		
-		Libro libro = libroRepository.findById(dto.getIdLibro()) 
-				.orElseThrow(() -> new RuntimeException("Libro no encontrado")); 
-		
+		// Permitir cambiar usuario 
+		Usuario usuario = usuarioRepository.findById(dto.getIdUsuario()) .orElseThrow(() -> new RuntimeException("Usuario no encontrado")); 
 		prestamo.setUsuario(usuario); 
-		prestamo.setLibro(libro);
 		
-		Prestamo actuializado = prestamoRepository.save(prestamo);
-		return prestamoMapper.toResponseDto(actuializado);
+		// Permitir cambiar libro 
+		Libro libro = libroRepository.findById(dto.getIdLibro()) .orElseThrow(() -> new RuntimeException("Libro no encontrado")); 
+		prestamo.setLibro(libro); Prestamo actualizado = prestamoRepository.save(prestamo); 
+		
+		return prestamoMapper.toResponseDto(actualizado);
 	}
 
 	@Override
