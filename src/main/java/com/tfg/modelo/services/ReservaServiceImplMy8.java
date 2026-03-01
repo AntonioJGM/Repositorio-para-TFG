@@ -65,6 +65,7 @@ public class ReservaServiceImplMy8 implements ReservaService{
 		//Asignar relaciones 
 		nuevaReserva.setLibro(libro); 
 		nuevaReserva.setUsuario(usuario);
+		nuevaReserva.setFechaReserva(dto.getFechaReserva());
 		
 		//Guarda
 		Reserva guardado = reservaRepository.save(nuevaReserva);

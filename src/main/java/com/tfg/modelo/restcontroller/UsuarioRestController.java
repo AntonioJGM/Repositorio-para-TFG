@@ -28,7 +28,7 @@ public class UsuarioRestController {
 	@Autowired
 	private UsuarioService usuarioService;
 	
-	//Con esto le decimos a react que rol tiene el ususario logueado para los permisos 
+	//Con esto le decimos angular que rol tiene el ususario logueado para los permisos 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication auth) {
 

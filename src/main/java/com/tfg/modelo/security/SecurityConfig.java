@@ -25,11 +25,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
 	
-	@Autowired
-	private JwtAuthenticationFilter jwtFilter;
-	
 	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
 		
 		http
 		//Desactivamos CSRF porque tu API es REST y no usa formularios
@@ -44,6 +41,8 @@ public class SecurityConfig {
 				//Permitir OPTIONS para que React pueda hacer preflight CORS
 				.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers("/libro/**").permitAll()
+				.requestMatchers("/prestamo/**").permitAll()
+				.requestMatchers("/reserva/**").permitAll()
 				//El resto de rutas siguen requiriendo autenticación
 				.anyRequest().authenticated())
 		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
