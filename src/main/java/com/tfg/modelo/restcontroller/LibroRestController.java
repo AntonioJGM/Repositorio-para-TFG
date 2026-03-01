@@ -19,6 +19,7 @@ import com.tfg.modelo.services.LibroService;
 
 @RestController
 @RequestMapping("/libro")
+@CrossOrigin(origins="**")
 public class LibroRestController {
 	
 	@Autowired
