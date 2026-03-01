@@ -11,11 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.tfg.modelo.dtos.UsuarioLoginDto;
 import com.tfg.modelo.entities.Rol;
 import com.tfg.modelo.entities.Usuario;
+import com.tfg.modelo.repositories.RolRepository;
 import com.tfg.modelo.repositories.UsuarioRepository;
 import com.tfg.modelo.security.JwtService;
 
@@ -33,6 +35,12 @@ public class AuthController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired private 
+    PasswordEncoder passwordEncoder;
+    
+    @Autowired private 
+    RolRepository rolRepository;
+    
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UsuarioLoginDto loginRequest) throws AuthenticationException {
         Authentication authentication = authenticationManager.authenticate(
@@ -57,4 +65,30 @@ public class AuthController {
 
 		return ResponseEntity.ok(response);
     }
+    
+    @PostMapping("/register") 
+    public ResponseEntity<?> register(@RequestBody Usuario usuario) { 
+    	
+    	//Comprobar si el email ya existe 
+    	if (usuarioRepository.existsByEmail(usuario.getEmail())) { 
+    		return ResponseEntity.badRequest().body(Map.of("message","El email ya está registrado")); 
+    	} 
+    	
+    	//Encriptar contraseña 
+    	usuario.setPassword(passwordEncoder.encode(usuario.getPassword())); 
+    	
+    	//Activar usuario 
+    	usuario.setActivo(true); 
+    	
+    	//Asignar rol por defecto 
+    	Rol rolUser = rolRepository.findByNombre("USUARIO")
+    			.orElseThrow(() -> new RuntimeException("Rol USUARIO no encontrado")); 
+    	usuario.setRol(rolUser); 
+    	
+    	//Guardar usuario 
+    	usuarioRepository.save(usuario); 
+    	return ResponseEntity.ok(Map.of("message", "Usuario registrado correctamente"));
+ 
+    }
+    
 }

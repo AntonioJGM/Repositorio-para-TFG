@@ -9,5 +9,6 @@ import com.tfg.modelo.entities.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
 	
 	Optional<Usuario> findByEmail(String email);
+	boolean existsByEmail(String email); 
 
 }
