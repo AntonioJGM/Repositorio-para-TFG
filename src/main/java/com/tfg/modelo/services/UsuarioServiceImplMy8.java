@@ -1,6 +1,7 @@
 package com.tfg.modelo.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -100,6 +101,11 @@ public class UsuarioServiceImplMy8 implements UsuarioService, UserDetailsService
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		return usuarioRepository.findByEmail(username).orElse(null);
+	}
+
+	@Override
+	public Optional<Usuario> findByEmail(String email) {
+		return usuarioRepository.findByEmail(email);
 	}
 	
 }

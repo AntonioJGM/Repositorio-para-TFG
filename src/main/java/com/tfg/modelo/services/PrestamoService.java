@@ -9,9 +9,12 @@ import com.tfg.modelo.dtos.PrestamoResponseDto;
 public interface PrestamoService{
 	
 	List<PrestamoResponseDto> findAll();
+	List<PrestamoResponseDto> obtenerPrestamosActivosUsuario(int idUsuario);
+	void obtenerPorIdPrestamosAdIdUsuario(int idPrestamo, int idUsuario);
 	PrestamoResponseDto findById(int id);
 	PrestamoResponseDto create(PrestamoRequestDto dto);
 	PrestamoResponseDto update(int id, PrestamoRequestDto dto);
     void delete(int id);
+    void devolverPrestamo(int idPrestamo, int idUsuario);
 
 }

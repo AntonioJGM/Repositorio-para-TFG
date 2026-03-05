@@ -37,7 +37,9 @@ public class SecurityConfig {
 		.cors(Customizer.withDefaults())
 		//Configuramos qué rutas requieren autenticación
 		.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/auth/**").permitAll() 
+				.requestMatchers("/auth/**").permitAll()
+				//permitimos swagger
+				.requestMatchers("/swagger-ui/**","/v3/api-docs/**","/swagger-resources/**").permitAll()
 				//Permitir OPTIONS para que React pueda hacer preflight CORS
 				.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers("/libro/**").permitAll()

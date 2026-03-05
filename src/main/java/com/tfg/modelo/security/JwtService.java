@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class JwtService {
@@ -40,4 +41,19 @@ public class JwtService {
                 .getBody()
                 .getSubject();
     }
+    
+    public String extractToken(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+
+        if (header == null || !header.startsWith("Bearer ")) {
+            throw new RuntimeException("Token no encontrado o mal formado");
+        }
+
+        return header.substring(7); // elimina "Bearer "
+    }
+    
+    public String extractUsername(String token) { 
+    	return extractEmail(token); // en tu JWT, el subject es el email 
+    }
+
 }

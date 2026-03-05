@@ -1,9 +1,11 @@
 package com.tfg.modelo.restcontroller;
 
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tfg.modelo.dtos.PrestamoRequestDto;
 import com.tfg.modelo.dtos.PrestamoResponseDto;
+import com.tfg.modelo.entities.Usuario;
+import com.tfg.modelo.security.JwtService;
 import com.tfg.modelo.services.PrestamoService;
+import com.tfg.modelo.services.UsuarioService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/prestamo")
@@ -23,6 +30,12 @@ public class PrestamoRestController {
 	
 	@Autowired
 	private PrestamoService prestamoService;
+	
+	@Autowired
+	private UsuarioService usuarioService; 
+	
+	@Autowired
+	private JwtService jwtService;
 	
 	@GetMapping("/byId/{prestamoId}")
     ResponseEntity<?> findOne(@PathVariable int prestamoId) {
@@ -40,6 +53,49 @@ public class PrestamoRestController {
         return ResponseEntity.ok(prestamoService.findAll());
     }
 
+    @GetMapping("/mis-prestamos")
+    ResponseEntity<?> misPrestamos(HttpServletRequest request){
+    	try { 
+    		String token = jwtService.extractToken(request); 
+    		String email = jwtService.extractUsername(token); 
+    		
+    		Usuario usuario = usuarioService.findByEmail(email)
+    				.orElseThrow(() -> new RuntimeException("Usuario no encontrado")); 
+    		
+    		List<PrestamoResponseDto> prestamos = 
+    				prestamoService.obtenerPrestamosActivosUsuario(usuario.getIdUsuario()); 
+    		
+    		return ResponseEntity.ok(prestamos); 
+    	} catch (RuntimeException ex) { 
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage()); 
+    	} catch (Exception ex) { 
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR) .body("Error al obtener los préstamos del usuario"); 
+    	}
+    }
+    
+    @PutMapping("/devolver/{idPrestamo}")
+    public ResponseEntity<?> devolverPrestamo( @PathVariable int idPrestamo, HttpServletRequest request) {
+
+        try {
+            String token = jwtService.extractToken(request);
+            String email = jwtService.extractUsername(token);
+
+            Usuario usuario = usuarioService.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            prestamoService.devolverPrestamo(idPrestamo, usuario.getIdUsuario());
+
+            return ResponseEntity.ok("Devolución correcta");
+
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al devolver el préstamo");
+        }
+    }
+
+    
     @PostMapping("/create")
     ResponseEntity<?> create(@RequestBody PrestamoRequestDto prestamoDto) {
         PrestamoResponseDto creado = prestamoService.create(prestamoDto);
