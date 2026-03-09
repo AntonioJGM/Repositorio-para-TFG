@@ -115,7 +115,7 @@ public class PrestamoServiceImplMy8 implements PrestamoService{
 	}
 
 	@Override
-	public void devolverPrestamo(int idPrestamo, int idUsuario) {
+	public PrestamoResponseDto devolverPrestamo(int idPrestamo, int idUsuario) {
 		Prestamo prestamo = prestamoRepository.findById(idPrestamo) 
 				.orElseThrow(() -> new RuntimeException("Préstamo no encontrado")); 
 		
@@ -129,7 +129,10 @@ public class PrestamoServiceImplMy8 implements PrestamoService{
 		libro.setDisponible(true); 
 		
 		libroRepository.save(libro); 
-		prestamoRepository.save(prestamo);
+		
+		Prestamo prestamosActualizado = prestamoRepository.save(prestamo);
+		
+		return prestamoMapper.toResponseDto(prestamosActualizado);
 		
 	}
 

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tfg.modelo.dtos.PrestamoRequestDto;
 import com.tfg.modelo.dtos.PrestamoResponseDto;
+import com.tfg.modelo.entities.Prestamo;
 import com.tfg.modelo.entities.Usuario;
 import com.tfg.modelo.security.JwtService;
 import com.tfg.modelo.services.PrestamoService;
@@ -83,9 +84,9 @@ public class PrestamoRestController {
             Usuario usuario = usuarioService.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            prestamoService.devolverPrestamo(idPrestamo, usuario.getIdUsuario());
+            PrestamoResponseDto prestamoActualizado = prestamoService.devolverPrestamo(idPrestamo, usuario.getIdUsuario());
 
-            return ResponseEntity.ok("Devolución correcta");
+            return ResponseEntity.ok(prestamoActualizado);
 
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());

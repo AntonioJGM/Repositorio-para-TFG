@@ -15,6 +15,6 @@ public interface PrestamoService{
 	PrestamoResponseDto create(PrestamoRequestDto dto);
 	PrestamoResponseDto update(int id, PrestamoRequestDto dto);
     void delete(int id);
-    void devolverPrestamo(int idPrestamo, int idUsuario);
+    PrestamoResponseDto devolverPrestamo(int idPrestamo, int idUsuario);
 
 }
