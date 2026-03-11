@@ -1,5 +1,6 @@
 package com.tfg.modelo.services;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.tfg.modelo.dtos.ReservaRequestDto;
 import com.tfg.modelo.dtos.ReservaResponseDto;
 import com.tfg.modelo.entities.Libro;
+import com.tfg.modelo.entities.Prestamo;
 import com.tfg.modelo.entities.Reserva;
 import com.tfg.modelo.entities.Usuario;
 import com.tfg.modelo.mappers.ReservaMapper;
@@ -105,5 +107,17 @@ public class ReservaServiceImplMy8 implements ReservaService{
 			throw new RuntimeException("Reserva no encontrada");
 		reservaRepository.deleteById(id);		
 	}
+
+	 public List<ReservaResponseDto> obtenerReservasUsuario(int idUsuario) {
+
+        List<Reserva> reservas = reservaRepository.findByUsuario_IdUsuario(idUsuario);
+
+        return reservas.stream()
+                .map(reservaMapper::toResponseDto)
+                .toList();
+	    }
+
+
 	
+
 }

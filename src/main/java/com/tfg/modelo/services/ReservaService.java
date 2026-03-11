@@ -8,6 +8,7 @@ public interface ReservaService{
 	
 	List<ReservaResponseDto> findAll();
 	ReservaResponseDto findById(int id);
+	List<ReservaResponseDto> obtenerReservasUsuario(int idUsuario);
 	ReservaResponseDto create(ReservaRequestDto dto);
 	ReservaResponseDto update(int id, ReservaRequestDto dto);
     void delete(int id);

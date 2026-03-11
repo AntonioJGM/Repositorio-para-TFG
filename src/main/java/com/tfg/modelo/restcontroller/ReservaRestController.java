@@ -1,5 +1,7 @@
 package com.tfg.modelo.restcontroller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +15,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tfg.modelo.dtos.PrestamoResponseDto;
 import com.tfg.modelo.dtos.ReservaRequestDto;
 import com.tfg.modelo.dtos.ReservaResponseDto;
+import com.tfg.modelo.entities.Usuario;
+import com.tfg.modelo.security.JwtService;
 import com.tfg.modelo.services.ReservaService;
+import com.tfg.modelo.services.UsuarioService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/reserva")
@@ -24,7 +32,14 @@ public class ReservaRestController {
 	@Autowired
     private ReservaService reservaService;
 
-    @GetMapping("/byId/{reservaId}")
+	@Autowired
+	private UsuarioService usuarioService; 
+	
+	@Autowired
+	private JwtService jwtService;
+	
+	
+	@GetMapping("/byId/{reservaId}")
     ResponseEntity<?> findOne(@PathVariable int reservaId) {
         ReservaResponseDto reserva = reservaService.findById(reservaId);
 
@@ -67,4 +82,27 @@ public class ReservaRestController {
         return ResponseEntity.noContent().build();
     }
     
+    
+    @GetMapping("/mis-reservas")
+    public ResponseEntity<?> misReservas(HttpServletRequest request) {
+    	try {
+            String token = jwtService.extractToken(request);
+            String email = jwtService.extractUsername(token);
+
+            Usuario usuario = usuarioService.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            List<ReservaResponseDto> reservas =
+                    reservaService.obtenerReservasUsuario(usuario.getIdUsuario());
+
+            return ResponseEntity.ok(reservas);
+
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al obtener las reservas del usuario");
+        }
+    }
+
 }
