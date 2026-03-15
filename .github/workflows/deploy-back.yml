@@ -10,36 +10,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout del repo
-      - name: Checkout repository
-        uses: actions/checkout@v3
 
-      # 2️⃣ Configurar Java
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
 
-      # 3️⃣ Build backend con Maven
-      - name: Make Maven wrapper executable
-        run: chmod +x ./mvnw
-        
       - name: Build backend
         run: |
+          chmod +x mvnw
           ./mvnw clean package -DskipTests
 
-      # 4️⃣ Deploy al VPS
-      - name: Deploy to VPS
+      - name: Upload jar to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 217.154.181.154
+          username: root
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "target/TFG_DAW-0.0.1-SNAPSHOT.jar"
+          target: "/root/back/"
+
+      - name: Restart backend on VPS
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: 217.154.181.154
           username: root
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            echo "Deploying backend..."
+            echo "Stopping old backend..."
             pkill -f TFG_DAW-0.0.1-SNAPSHOT.jar || true
-            cp $GITHUB_WORKSPACE/target/TFG_DAW-0.0.1-SNAPSHOT.jar /root/back/
-            nohup java -Djava.net.preferIPv4Stack=true -jar /root/back/TFG_DAW-0.0.1-SNAPSHOT.jar \
+
+            echo "Starting new backend..."
+            setsid java -Djava.net.preferIPv4Stack=true -jar /root/back/target/TFG_DAW-0.0.1-SNAPSHOT.jar \
             > /root/back/nohup.out 2>&1 < /dev/null &
-            
+
+            sleep 5
+
+            echo "Backend running on:"
+            lsof -i :9012 || true
