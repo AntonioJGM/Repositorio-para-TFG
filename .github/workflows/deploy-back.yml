@@ -1,14 +1,41 @@
-name: Deploy Backend on: push: branches: - main jobs: build-and-deploy: runs-on: ubuntu-latest steps:
-    # 1️⃣ Checkout del repo
-    - name: Checkout repository uses: actions/checkout@v3
-    # 2️⃣ Configurar Java
-    - name: Setup Java uses: actions/setup-java@v3 with: distribution: temurin java-version: '21'
-    # 3️⃣ Build backend con Maven
-    - name: Build backend run: | ./mvnw clean package -DskipTests
-    # 4️⃣ Deploy al VPS
-    - name: Deploy to VPS uses: appleboy/ssh-action@v0.1.7 with: host: 217.154.181.154 username: root key: ${{ secrets.VPS_SSH_KEY }} 
-        script: |
-          echo "Deploying backend..." pkill -f TFG_DAW-0.0.1-SNAPSHOT.jar || true cp 
-          $GITHUB_WORKSPACE/target/TFG_DAW-0.0.1-SNAPSHOT.jar /root/back/ nohup java -Djava.net.preferIPv4Stack=true -jar 
-          /root/back/TFG_DAW-0.0.1-SNAPSHOT.jar > /root/back/nohup.out 2>&1 &
-          echo "Backend deployed!"
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout del repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Configurar Java
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      # 3️⃣ Build backend con Maven
+      - name: Build backend
+        run: |
+          ./mvnw clean package -DskipTests
+
+      # 4️⃣ Deploy al VPS
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: 217.154.181.154
+          username: root
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            echo "Deploying backend..."
+            pkill -f TFG_DAW-0.0.1-SNAPSHOT.jar || true
+            cp $GITHUB_WORKSPACE/target/TFG_DAW-0.0.1-SNAPSHOT.jar /root/back/
+            nohup java -Djava.net.preferIPv4Stack=true -jar /root/back/TFG_DAW-0.0.1-SNAPSHOT.jar > /root/back/nohup.out 2>&1 &
+            echo "Backend deployed!"
