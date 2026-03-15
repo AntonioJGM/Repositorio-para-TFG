@@ -22,6 +22,9 @@ jobs:
           java-version: '21'
 
       # 3️⃣ Build backend con Maven
+      - name: Make Maven wrapper executable
+        run: chmod +x ./mvnw
+        
       - name: Build backend
         run: |
           ./mvnw clean package -DskipTests
