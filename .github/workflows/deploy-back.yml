@@ -52,4 +52,3 @@ jobs:
 
             echo "Backend running on:"
             lsof -i :9012 || true
-
