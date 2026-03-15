@@ -33,36 +33,14 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "target/TFG_DAW-0.0.1-SNAPSHOT.jar"
           target: "/root/back/"
-
-      - name: Restart backend on VPS
+          
+      - name: Restart backend
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: 217.154.181.154
           username: root
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            echo "Stopping old backend..."
-      
-            PID=$(pgrep -f TFG_DAW-0.0.1-SNAPSHOT.jar || true)
-      
-            if [ ! -z "$PID" ]; then
-              echo "Killing process $PID"
-              kill -9 $PID
-            else
-              echo "No backend running"
-            fi
-      
-            echo "Starting new backend..."
-      
-            cd /root/back/target
-      
-            nohup java -Djava.net.preferIPv4Stack=true -jar TFG_DAW-0.0.1-SNAPSHOT.jar \
-            > /root/back/nohup.out 2>&1 &
-      
-            sleep 6
-      
-            echo "Running processes:"
-            ps aux | grep java
-      
-            echo "Port check:"
-            lsof -i :9012 || true
+            echo "Restarting backend..."
+            systemctl restart tfg-backend
+            systemctl status tfg-backend --no-pager
