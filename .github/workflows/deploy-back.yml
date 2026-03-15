@@ -42,3 +42,4 @@ jobs:
             cp $GITHUB_WORKSPACE/target/TFG_DAW-0.0.1-SNAPSHOT.jar /root/back/
             nohup java -Djava.net.preferIPv4Stack=true -jar /root/back/TFG_DAW-0.0.1-SNAPSHOT.jar > /root/back/nohup.out 2>&1 &
             echo "Backend deployed!"
+            
