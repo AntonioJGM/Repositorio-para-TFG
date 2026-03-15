@@ -42,7 +42,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             echo "Stopping old backend..."
-            pkill -f TFG_DAW-0.0.1-SNAPSHOT.jar || true
+            pkill -f 'java.*TFG_DAW-0.0.1-SNAPSHOT.jar' || true
 
             echo "Starting new backend..."
             setsid java -Djava.net.preferIPv4Stack=true -jar /root/back/target/TFG_DAW-0.0.1-SNAPSHOT.jar \
