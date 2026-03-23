@@ -37,14 +37,16 @@ public class SecurityConfig {
 		.cors(Customizer.withDefaults())
 		//Configuramos qué rutas requieren autenticación
 		.authorizeHttpRequests(auth -> auth
+				// Público
 				.requestMatchers("/auth/**").permitAll()
-				//permitimos swagger
 				.requestMatchers("/swagger-ui/**","/v3/api-docs/**","/swagger-resources/**").permitAll()
-				//Permitir OPTIONS para que React pueda hacer preflight CORS
-				.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers("/libro/**").permitAll()
-				.requestMatchers("/prestamo/**").permitAll()
-				.requestMatchers("/reserva/**").permitAll()
+				.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+				// Solo ADMIN
+			    .requestMatchers("/admin/**").hasRole("ADMIN")
+			    // Usuarios autenticados (usuario + bibliotecario + admin)
+				.requestMatchers("/prestamo/**").authenticated()
+				.requestMatchers("/reserva/**").authenticated()
 				//El resto de rutas siguen requiriendo autenticación
 				.anyRequest().authenticated())
 		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
